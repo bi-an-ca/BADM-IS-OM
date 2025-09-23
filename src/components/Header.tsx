@@ -11,7 +11,7 @@ export function Header() {
               <Dumbbell className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-heading text-accent">Momentum</h1>
+              <h1 className="text-2xl font-heading text-accent">Momento</h1>
               <p className="text-sm text-accent/70 font-body">Fitness made simple, safe, and accessible</p>
             </div>
           </div>
