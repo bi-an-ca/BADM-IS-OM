@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { AuthModal } from './components/AuthModal';
 import { ProgramBuilder } from './components/ProgramBuilder';
 import { WorkoutProgram } from './components/WorkoutProgram';
 import { Header } from './components/Header';
+import { useAuth } from './hooks/useAuth';
 import { storage } from './utils/storage';
 
 export interface UserPreferences {
@@ -22,30 +24,39 @@ export interface Exercise {
 }
 
 function App() {
+  const { user, loading: authLoading, isAuthenticated } = useAuth();
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
   const [showProgram, setShowProgram] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load user data on app start
   useEffect(() => {
     const loadUserData = () => {
       try {
-        const userData = storage.getUserData();
-        if (userData.preferences) {
-          setUserPreferences(userData.preferences);
-          setShowProgram(true);
+        if (isAuthenticated) {
+          const userData = storage.getUserData();
+          if (userData.preferences) {
+            setUserPreferences(userData.preferences);
+            setShowProgram(true);
+          }
         }
       } catch (error) {
         console.error('Error loading user data:', error);
       } finally {
-        setIsLoading(false);
+        setIsLoading(authLoading);
       }
     };
 
     loadUserData();
-  }, []);
+  }, [isAuthenticated, authLoading]);
 
   const handleProgramGenerated = (preferences: UserPreferences) => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    
     setUserPreferences(preferences);
     setShowProgram(true);
     
@@ -60,8 +71,12 @@ function App() {
     setUserPreferences(null);
   };
 
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+  };
+
   // Loading component
-  if (isLoading) {
+  if (isLoading || authLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-white via-secondary-light to-secondary-dark font-body flex items-center justify-center">
         <div className="text-center">
@@ -74,9 +89,29 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-secondary-light to-secondary-dark font-body">
-      <Header />
+      <Header 
+        user={user}
+        onSignInClick={() => setShowAuthModal(true)}
+      />
       
-      {!showProgram ? (
+      {!isAuthenticated ? (
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-secondary-light/50 p-12 shadow-lg">
+            <h1 className="text-4xl font-heading text-accent mb-4">
+              Custom Workouts. Smart Feedback. Real Progress.
+            </h1>
+            <p className="text-xl text-accent/70 font-body mb-8">
+              Your AI-powered virtual coach for safe and confident training
+            </p>
+            <button
+              onClick={() => setShowAuthModal(true)}
+              className="px-8 py-4 bg-primary text-white font-heading rounded-2xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 shadow-lg"
+            >
+              Start Your Journey
+            </button>
+          </div>
+        </div>
+      ) : !showProgram ? (
         <ProgramBuilder onProgramGenerated={handleProgramGenerated} />
       ) : (
         <WorkoutProgram 
@@ -84,6 +119,12 @@ function App() {
           onBack={handleBackToBuilder}
         />
       )}
+      
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onAuthSuccess={handleAuthSuccess}
+      />
     </div>
   );
 }
