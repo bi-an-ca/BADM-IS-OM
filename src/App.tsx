@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ProgramBuilder } from './components/ProgramBuilder';
 import { WorkoutProgram } from './components/WorkoutProgram';
 import { Header } from './components/Header';
+import { AuthCallback } from './components/AuthCallback';
 import { storage } from './utils/storage';
+import { supabase, handleAuthStateChange } from './lib/supabase';
 
 export interface UserPreferences {
   goal: string;
@@ -25,11 +27,31 @@ function App() {
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
   const [showProgram, setShowProgram] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [isAuthCallback, setIsAuthCallback] = useState(false);
+
+  // Check if this is an auth callback
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hash = window.location.hash;
+    
+    // Check if we have auth tokens in URL
+    if (hash.includes('access_token') || urlParams.has('access_token')) {
+      setIsAuthCallback(true);
+    }
+  }, []);
 
   // Load user data on app start
   useEffect(() => {
-    const loadUserData = () => {
+    const loadUserData = async () => {
       try {
+        // Check for existing session
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          setUser(session.user);
+        }
+
         const userData = storage.getUserData();
         if (userData.preferences) {
           setUserPreferences(userData.preferences);
@@ -43,6 +65,13 @@ function App() {
     };
 
     loadUserData();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = handleAuthStateChange((user) => {
+      setUser(user);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleProgramGenerated = (preferences: UserPreferences) => {
@@ -60,6 +89,18 @@ function App() {
     setUserPreferences(null);
   };
 
+  const handleAuthComplete = (user: any) => {
+    setUser(user);
+    setIsAuthCallback(false);
+    // Clean up URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  };
+
+  // Auth callback component
+  if (isAuthCallback) {
+    return <AuthCallback onAuthComplete={handleAuthComplete} />;
+  }
+
   // Loading component
   if (isLoading) {
     return (
@@ -74,7 +115,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-secondary-light to-secondary-dark font-body">
-      <Header />
+      <Header user={user} onUserChange={setUser} />
       
       {!showProgram ? (
         <ProgramBuilder onProgramGenerated={handleProgramGenerated} />

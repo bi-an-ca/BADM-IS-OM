@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { Dumbbell, BarChart3, Heart, Menu } from 'lucide-react';
 import { ProgressTracker } from './ProgressTracker';
+import { AuthButton } from './AuthButton';
 import { storage } from '../utils/storage';
 
-export function Header() {
+interface HeaderProps {
+  user?: any;
+  onUserChange?: (user: any) => void;
+}
+
+export function Header({ user, onUserChange }: HeaderProps) {
   const [showProgress, setShowProgress] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -54,6 +60,10 @@ export function Header() {
                   </span>
                 )}
               </button>
+
+              {onUserChange && (
+                <AuthButton user={user} onUserChange={onUserChange} />
+              )}
             </div>
 
             {/* Mobile Menu Button */}

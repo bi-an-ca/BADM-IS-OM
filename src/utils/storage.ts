@@ -9,6 +9,12 @@ export interface WorkoutSession {
 }
 
 export interface UserData {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    avatar?: string;
+  } | null;
   preferences: UserPreferences | null;
   favoriteExercises: string[];
   workoutHistory: WorkoutSession[];
@@ -33,6 +39,7 @@ export const storage = {
     }
     
     return {
+      user: null,
       preferences: null,
       favoriteExercises: [],
       workoutHistory: [],
