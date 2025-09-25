@@ -8,7 +8,7 @@ export function Header() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
-  const userData = storage.getUserData();
+  const userData = storage.getUserData(user?.id);
   const favoriteCount = userData.favoriteExercises.length;
   const currentStreak = userData.currentStreak;
 

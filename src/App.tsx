@@ -35,7 +35,7 @@ function App() {
     const loadUserData = () => {
       try {
         if (isAuthenticated) {
-          const userData = storage.getUserData();
+          const userData = storage.getUserData(user?.id);
           if (userData.preferences) {
             setUserPreferences(userData.preferences);
             setShowProgram(true);
@@ -61,9 +61,9 @@ function App() {
     setShowProgram(true);
     
     // Save preferences to storage
-    const userData = storage.getUserData();
+    const userData = storage.getUserData(user?.id);
     userData.preferences = preferences;
-    storage.saveUserData(userData);
+    storage.saveUserData(userData, user?.id);
   };
 
   const handleBackToBuilder = () => {
