@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Play, Info, Target, Settings, Heart, Timer } from 'lucide-react';
 import type { Exercise } from '../App';
-import { useAuth } from '../hooks/useAuth';
 import { storage } from '../utils/storage';
 import { WorkoutTimer } from './WorkoutTimer';
 
@@ -12,10 +11,9 @@ interface ExerciseCardProps {
 }
 
 export function ExerciseCard({ exercise, index, dayContext }: ExerciseCardProps) {
-  const { user } = useAuth();
   const [showDetails, setShowDetails] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(storage.isFavorite(exercise.id, user?.id));
+  const [isFavorite, setIsFavorite] = useState(storage.isFavorite(exercise.id));
 
   const getMuscleGroupColor = (muscleGroup: string) => {
     const colorMap: { [key: string]: string } = {
@@ -35,9 +33,9 @@ export function ExerciseCard({ exercise, index, dayContext }: ExerciseCardProps)
 
   const handleFavoriteToggle = () => {
     if (isFavorite) {
-      storage.removeFromFavorites(exercise.id, user?.id);
+      storage.removeFromFavorites(exercise.id);
     } else {
-      storage.addToFavorites(exercise.id, user?.id);
+      storage.addToFavorites(exercise.id);
     }
     setIsFavorite(!isFavorite);
   };
@@ -152,7 +150,7 @@ export function ExerciseCard({ exercise, index, dayContext }: ExerciseCardProps)
                   exercises: [exercise],
                   duration: getExerciseDuration(),
                   completed: true
-               }, user?.id);
+                });
               }}
             />
           </div>
