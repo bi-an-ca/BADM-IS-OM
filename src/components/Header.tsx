@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Dumbbell, BarChart3, Heart, Menu } from 'lucide-react';
+import { Dumbbell, BarChart3, Heart, Menu, LogOut, User } from 'lucide-react';
 import { ProgressTracker } from './ProgressTracker';
 import { storage } from '../utils/storage';
 import { exerciseDatabase } from '../data/exercises';
+import { useAuth } from '../hooks/useAuth';
 
 interface HeaderProps {
   user: any;
@@ -10,6 +11,7 @@ interface HeaderProps {
 }
 
 export function Header({ user, onSignInClick }: HeaderProps) {
+  const { signOut } = useAuth();
   const [showProgress, setShowProgress] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -17,6 +19,18 @@ export function Header({ user, onSignInClick }: HeaderProps) {
   const userData = storage.getUserData(user?.id || 'anonymous');
   const favoriteCount = userData.favoriteExercises.length;
   const currentStreak = userData.currentStreak;
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // Clear user-specific data
+      if (user?.id) {
+        storage.clearData(user.id);
+      }
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   return (
     <>
@@ -60,6 +74,23 @@ export function Header({ user, onSignInClick }: HeaderProps) {
                   </span>
                 )}
               </button>
+
+              {/* User Menu */}
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 px-3 py-2 bg-primary/10 text-primary rounded-xl">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm font-body hidden sm:block">
+                    {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
+                  </span>
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center space-x-2 px-3 py-2 text-accent/70 hover:text-accent hover:bg-accent/10 rounded-xl transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="text-sm font-body hidden sm:block">Sign Out</span>
+                </button>
+              </div>
             </div>
 
             {/* Mobile Menu Button */}
@@ -106,6 +137,26 @@ export function Header({ user, onSignInClick }: HeaderProps) {
                     </span>
                   )}
                 </button>
+
+                {/* User Info and Sign Out */}
+                <div className="pt-2 border-t border-secondary-light/30">
+                  <div className="flex items-center space-x-2 px-4 py-2 text-accent/70">
+                    <User className="h-4 w-4" />
+                    <span className="text-sm font-body">
+                      {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleSignOut();
+                      setShowMobileMenu(false);
+                    }}
+                    className="flex items-center space-x-2 px-4 py-2 text-accent/70 hover:text-accent hover:bg-accent/10 rounded-xl transition-colors w-full"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span className="font-body">Sign Out</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
