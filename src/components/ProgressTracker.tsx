@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Target, Calendar, Clock, TrendingUp, Flame } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
 import { storage } from '../utils/storage';
 
 interface ProgressTrackerProps {
@@ -8,13 +7,12 @@ interface ProgressTrackerProps {
 }
 
 export function ProgressTracker({ onClose }: ProgressTrackerProps) {
-  const { user } = useAuth();
-  const [stats, setStats] = useState(storage.getWorkoutStats(user?.id));
+  const [stats, setStats] = useState(storage.getWorkoutStats());
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'all'>('week');
 
   useEffect(() => {
-    setStats(storage.getWorkoutStats(user?.id));
-  }, [user?.id]);
+    setStats(storage.getWorkoutStats());
+  }, []);
 
   const getStreakMessage = () => {
     if (stats.currentStreak === 0) {

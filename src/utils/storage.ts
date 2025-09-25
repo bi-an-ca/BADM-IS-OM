@@ -9,12 +9,6 @@ export interface WorkoutSession {
 }
 
 export interface UserData {
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    avatar?: string;
-  } | null;
   preferences: UserPreferences | null;
   favoriteExercises: string[];
   workoutHistory: WorkoutSession[];
@@ -26,16 +20,11 @@ export interface UserData {
 
 const STORAGE_KEY = 'momentum-fitness-data';
 
-// Get user-specific storage key
-const getUserStorageKey = (userId?: string) => {
-  return userId ? `${STORAGE_KEY}-${userId}` : STORAGE_KEY;
-};
-
 export const storage = {
   // Get user data from localStorage
-  getUserData(userId?: string): UserData {
+  getUserData(): UserData {
     try {
-      const data = localStorage.getItem(getUserStorageKey(userId));
+      const data = localStorage.getItem(STORAGE_KEY);
       if (data) {
         return JSON.parse(data);
       }
@@ -44,7 +33,6 @@ export const storage = {
     }
     
     return {
-      user: null,
       preferences: null,
       favoriteExercises: [],
       workoutHistory: [],
@@ -56,39 +44,39 @@ export const storage = {
   },
 
   // Save user data to localStorage
-  saveUserData(data: UserData, userId?: string): void {
+  saveUserData(data: UserData): void {
     try {
-      localStorage.setItem(getUserStorageKey(userId), JSON.stringify(data));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
       console.error('Error saving user data:', error);
     }
   },
 
   // Add exercise to favorites
-  addToFavorites(exerciseId: string, userId?: string): void {
-    const data = this.getUserData(userId);
+  addToFavorites(exerciseId: string): void {
+    const data = this.getUserData();
     if (!data.favoriteExercises.includes(exerciseId)) {
       data.favoriteExercises.push(exerciseId);
-      this.saveUserData(data, userId);
+      this.saveUserData(data);
     }
   },
 
   // Remove exercise from favorites
-  removeFromFavorites(exerciseId: string, userId?: string): void {
-    const data = this.getUserData(userId);
+  removeFromFavorites(exerciseId: string): void {
+    const data = this.getUserData();
     data.favoriteExercises = data.favoriteExercises.filter(id => id !== exerciseId);
-    this.saveUserData(data, userId);
+    this.saveUserData(data);
   },
 
   // Check if exercise is favorited
-  isFavorite(exerciseId: string, userId?: string): boolean {
-    const data = this.getUserData(userId);
+  isFavorite(exerciseId: string): boolean {
+    const data = this.getUserData();
     return data.favoriteExercises.includes(exerciseId);
   },
 
   // Save workout session
-  saveWorkoutSession(session: Omit<WorkoutSession, 'id'>, userId?: string): void {
-    const data = this.getUserData(userId);
+  saveWorkoutSession(session: Omit<WorkoutSession, 'id'>): void {
+    const data = this.getUserData();
     const newSession: WorkoutSession = {
       ...session,
       id: Date.now().toString()
@@ -110,12 +98,12 @@ export const storage = {
     data.longestStreak = Math.max(data.longestStreak, data.currentStreak);
     data.lastWorkoutDate = today;
     
-    this.saveUserData(data, userId);
+    this.saveUserData(data);
   },
 
   // Get workout statistics
-  getWorkoutStats(userId?: string) {
-    const data = this.getUserData(userId);
+  getWorkoutStats() {
+    const data = this.getUserData();
     const last7Days = data.workoutHistory.filter(session => {
       const sessionDate = new Date(session.date);
       const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -141,7 +129,7 @@ export const storage = {
   },
 
   // Clear all data
-  clearData(userId?: string): void {
-    localStorage.removeItem(getUserStorageKey(userId));
+  clearData(): void {
+    localStorage.removeItem(STORAGE_KEY);
   }
 };
