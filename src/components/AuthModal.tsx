@@ -52,7 +52,14 @@ export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
       }
 
       if (result.error) {
-        setError(result.error.message);
+        // Handle specific error cases with user-friendly messages
+        if (result.error.message === 'Email not confirmed') {
+          setError('Please check your email and click the confirmation link before signing in. If you didn\'t receive an email, try signing up again.');
+        } else if (result.error.message === 'Invalid login credentials') {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else {
+          setError(result.error.message);
+        }
       } else {
         onAuthSuccess();
         onClose();
