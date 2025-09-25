@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Dumbbell, BarChart3, Heart, Menu } from 'lucide-react';
 import { ProgressTracker } from './ProgressTracker';
-import { AuthButton } from './AuthButton';
 import { storage } from '../utils/storage';
+import { exerciseDatabase } from '../data/exercises';
 
 interface HeaderProps {
-  user?: any;
-  onUserChange?: (user: any) => void;
+  user: any;
+  onSignInClick: () => void;
 }
 
-export function Header({ user, onUserChange }: HeaderProps) {
+export function Header({ user, onSignInClick }: HeaderProps) {
   const [showProgress, setShowProgress] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
-  const userData = storage.getUserData();
+  const userData = storage.getUserData(user?.id || 'anonymous');
   const favoriteCount = userData.favoriteExercises.length;
   const currentStreak = userData.currentStreak;
 
@@ -60,10 +60,6 @@ export function Header({ user, onUserChange }: HeaderProps) {
                   </span>
                 )}
               </button>
-
-              {onUserChange && (
-                <AuthButton user={user} onUserChange={onUserChange} />
-              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -129,7 +125,7 @@ export function Header({ user, onUserChange }: HeaderProps) {
       {showFavorites && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <FavoritesList onClose={() => setShowFavorites(false)} />
+            <FavoritesList onClose={() => setShowFavorites(false)} userId={user?.id || 'anonymous'} />
           </div>
         </div>
       )}
@@ -138,9 +134,8 @@ export function Header({ user, onUserChange }: HeaderProps) {
 }
 
 // Favorites List Component
-function FavoritesList({ onClose }: { onClose: () => void }) {
-  const userData = storage.getUserData();
-  const { exerciseDatabase } = require('../data/exercises');
+function FavoritesList({ onClose, userId }: { onClose: () => void; userId: string }) {
+  const userData = storage.getUserData(userId);
   
   const favoriteExercises = exerciseDatabase.filter((exercise: any) => 
     userData.favoriteExercises.includes(exercise.id)

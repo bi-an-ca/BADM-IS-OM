@@ -1,38 +1,47 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
 
-// Replace these with your actual Supabase project credentials
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    // Configure redirect URLs
-    redirectTo: `${window.location.origin}/auth/callback`
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables')
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+// Auth helper functions
+export const auth = {
+  // Sign up with email and password
+  signUp: async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+    return { data, error }
+  },
+
+  // Sign in with email and password
+  signIn: async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+    return { data, error }
+  },
+
+  // Sign out
+  signOut: async () => {
+    const { error } = await supabase.auth.signOut()
+    return { error }
+  },
+
+  // Get current user
+  getCurrentUser: () => {
+    return supabase.auth.getUser()
+  },
+
+  // Listen to auth changes
+  onAuthStateChange: (callback: (event: string, session: any) => void) => {
+    return supabase.auth.onAuthStateChange(callback)
   }
-});
-
-// Handle auth state changes
-export const handleAuthStateChange = (callback: (user: any) => void) => {
-  return supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' && session?.user) {
-      callback(session.user);
-    } else if (event === 'SIGNED_OUT') {
-      callback(null);
-    }
-  });
-};
-
-// Handle auth callback from URL
-export const handleAuthCallback = async () => {
-  try {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) {
-      console.error('Error getting session:', error);
-      return null;
-    }
-    return data.session?.user || null;
-  } catch (error) {
-    console.error('Error handling auth callback:', error);
-    return null;
-  }
-};
+}
