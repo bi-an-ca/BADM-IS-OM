@@ -180,5 +180,185 @@ export const exerciseDatabase: Exercise[] = [
       'Create straight line from knees to shoulders',
       'Lower with control and repeat'
     ]
+  },
+  {
+    id: '13',
+    name: 'Jumping Jacks',
+    description: 'Full-body cardio exercise for warming up and endurance',
+    imageUrl: 'https://images.pexels.com/photos/4162483/pexels-photo-4162483.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Cardio', 'Full Body'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Stand with feet together and arms at sides',
+      'Jump up spreading feet shoulder-width apart',
+      'Simultaneously raise arms overhead',
+      'Jump back to starting position'
+    ]
+  },
+  {
+    id: '14',
+    name: 'Diamond Push-ups',
+    description: 'Advanced push-up variation targeting triceps and chest',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Chest', 'Arms'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    instructions: [
+      'Start in push-up position with hands close together',
+      'Form diamond shape with thumbs and index fingers',
+      'Lower chest toward hands',
+      'Push back up to starting position'
+    ]
+  },
+  {
+    id: '15',
+    name: 'Bulgarian Split Squats',
+    description: 'Single-leg squat variation for strength and stability',
+    imageUrl: 'https://images.pexels.com/photos/4162505/pexels-photo-4162505.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Legs', 'Glutes'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    instructions: [
+      'Stand 2-3 feet in front of a bench',
+      'Place top of rear foot on bench',
+      'Lower into lunge position',
+      'Drive through front heel to return to start'
+    ]
+  },
+  {
+    id: '16',
+    name: 'Russian Twists',
+    description: 'Core exercise targeting obliques and rotational strength',
+    imageUrl: 'https://images.pexels.com/photos/4162451/pexels-photo-4162451.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Abs'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Sit with knees bent and feet flat',
+      'Lean back slightly and lift feet off ground',
+      'Rotate torso side to side',
+      'Keep core engaged throughout'
+    ]
+  },
+  {
+    id: '17',
+    name: 'Wall Sits',
+    description: 'Isometric leg exercise for quad strength and endurance',
+    imageUrl: 'https://images.pexels.com/photos/4162505/pexels-photo-4162505.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Legs'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Stand with back against wall',
+      'Slide down until thighs are parallel to floor',
+      'Hold position with knees at 90 degrees',
+      'Keep back flat against wall'
+    ]
+  },
+  {
+    id: '18',
+    name: 'Tricep Dips',
+    description: 'Upper body exercise targeting triceps and shoulders',
+    imageUrl: 'https://images.pexels.com/photos/4164744/pexels-photo-4164744.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Arms', 'Shoulders'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    instructions: [
+      'Sit on edge of bench with hands gripping edge',
+      'Slide forward and lower body',
+      'Bend elbows to 90 degrees',
+      'Push back up to starting position'
+    ]
+  },
+  {
+    id: '19',
+    name: 'High Knees',
+    description: 'Cardio exercise for leg strength and endurance',
+    imageUrl: 'https://images.pexels.com/photos/4162515/pexels-photo-4162515.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Cardio', 'Legs'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Stand with feet hip-width apart',
+      'Run in place bringing knees up high',
+      'Pump arms naturally',
+      'Land softly on balls of feet'
+    ]
+  },
+  {
+    id: '20',
+    name: 'Side Planks',
+    description: 'Core exercise targeting obliques and stability',
+    imageUrl: 'https://images.pexels.com/photos/4162451/pexels-photo-4162451.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Abs'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    instructions: [
+      'Lie on side with legs straight',
+      'Prop up on forearm',
+      'Lift hips to create straight line',
+      'Hold position and breathe normally'
+    ]
+  },
+  {
+    id: '21',
+    name: 'Jump Squats',
+    description: 'Explosive leg exercise for power and cardio',
+    imageUrl: 'https://images.pexels.com/photos/4162505/pexels-photo-4162505.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Legs', 'Glutes', 'Cardio'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    instructions: [
+      'Start in squat position',
+      'Jump up explosively',
+      'Land softly back in squat',
+      'Immediately prepare for next jump'
+    ]
+  },
+  {
+    id: '22',
+    name: 'Bicycle Crunches',
+    description: 'Core exercise mimicking bicycle pedaling motion',
+    imageUrl: 'https://images.pexels.com/photos/4162451/pexels-photo-4162451.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Abs'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Lie on back with hands behind head',
+      'Bring knees to 90 degrees',
+      'Alternate bringing elbow to opposite knee',
+      'Keep lower back pressed to floor'
+    ]
+  },
+  {
+    id: '23',
+    name: 'Inchworms',
+    description: 'Full-body exercise combining forward fold and plank walk',
+    imageUrl: 'https://images.pexels.com/photos/4162483/pexels-photo-4162483.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Full Body', 'Cardio'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    instructions: [
+      'Start standing with feet together',
+      'Bend forward and walk hands out to plank',
+      'Hold plank for a moment',
+      'Walk hands back to feet and stand up'
+    ]
+  },
+  {
+    id: '24',
+    name: 'Glute Bridges',
+    description: 'Hip extension exercise for glutes and hamstrings',
+    imageUrl: 'https://images.pexels.com/photos/4162440/pexels-photo-4162440.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Glutes', 'Legs'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Lie on back with knees bent and feet flat',
+      'Squeeze glutes and lift hips up',
+      'Create straight line from knees to shoulders',
+      'Lower with control and repeat'
+    ]
   }
 ];
