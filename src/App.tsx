@@ -5,7 +5,7 @@ import { WorkoutProgram } from './components/WorkoutProgram';
 import { Header } from './components/Header';
 import { useAuth } from './hooks/useAuth';
 import { storage } from './utils/storage';
-import { LogOut, User, Target, TrendingUp, Clock, Heart } from 'lucide-react';
+import { LogOut, User, Target, TrendingUp, Clock, Heart, Info } from 'lucide-react';
 
 export interface UserPreferences {
   goal: string;
@@ -111,6 +111,17 @@ function App() {
       
        {!isAuthenticated ? (
          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+           {/* Demo Mode Notice */}
+           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-8 text-center">
+             <div className="flex items-center justify-center space-x-2 text-blue-700">
+               <Info className="h-5 w-5" />
+               <span className="font-body">
+                 <strong>Demo Mode:</strong> Authentication is currently in demo mode. 
+                 Any email/password combination will work for testing.
+               </span>
+             </div>
+           </div>
+
            {/* Hero Section */}
            <div className="text-center mb-16">
              <h1 className="text-5xl md:text-6xl font-heading text-accent mb-6">
