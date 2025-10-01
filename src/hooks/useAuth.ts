@@ -19,8 +19,9 @@ export function useAuth() {
   const hasSupabase = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY)
 
   useEffect(() => {
-    // If Supabase is not configured, immediately set loading to false
+    // Require Supabase configuration
     if (!hasSupabase) {
+      console.error('Supabase not configured. Please set up VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
       setAuthState({
         user: null,
         session: null,

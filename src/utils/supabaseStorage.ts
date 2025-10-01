@@ -24,18 +24,9 @@ export interface UserData {
 export const supabaseStorage = {
   // Get user profile and preferences
   async getUserData(): Promise<UserData> {
-    // Return demo data if no Supabase config
+    // Require Supabase configuration
     if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-      return {
-        preferences: null,
-        profile: null,
-        favoriteExercises: [],
-        workoutHistory: [],
-        currentStreak: 0,
-        longestStreak: 0,
-        totalWorkouts: 0,
-        lastWorkoutDate: null
-      };
+      throw new Error('Supabase not configured. Please set up VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
     }
     
     try {

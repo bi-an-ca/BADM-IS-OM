@@ -25,33 +25,38 @@ export function SignInPage() {
         // Validation for sign up
         if (!fullName.trim()) {
           setError('Full name is required');
+          setLoading(false);
           return;
         }
         if (password !== confirmPassword) {
           setError('Passwords do not match');
+          setLoading(false);
           return;
         }
         if (password.length < 6) {
           setError('Password must be at least 6 characters');
+          setLoading(false);
           return;
         }
 
-        const { error } = await signUp(email, password, fullName);
+        const { data, error } = await signUp(email, password, fullName);
         if (error) {
           setError(error.message);
-        } else {
-          // Success message could be shown here
-          console.log('Sign up successful');
+        } else if (data.user) {
+          setError('Check your email for a confirmation link to complete your registration.');
         }
       } else {
         // Sign in
-        const { error } = await signIn(email, password);
+        const { data, error } = await signIn(email, password);
         if (error) {
           setError(error.message);
+        } else if (data.user) {
+          // User will be automatically redirected by the auth state change
+          console.log('Sign in successful');
         }
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

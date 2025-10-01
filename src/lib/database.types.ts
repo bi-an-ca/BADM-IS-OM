@@ -12,21 +12,39 @@ export interface Database {
       user_profiles: {
         Row: {
           id: string
-          full_name: string
+          full_name: string | null
+          age: number | null
+          gender: string | null
+          fitness_goals: string[] | null
+          preferred_workout_styles: Json | null
+          target_muscle_groups: string[] | null
+          skill_level: string | null
           preferences: Json | null
           created_at: string | null
           updated_at: string | null
         }
         Insert: {
           id: string
-          full_name: string
+          full_name?: string | null
+          age?: number | null
+          gender?: string | null
+          fitness_goals?: string[] | null
+          preferred_workout_styles?: Json | null
+          target_muscle_groups?: string[] | null
+          skill_level?: string | null
           preferences?: Json | null
           created_at?: string | null
           updated_at?: string | null
         }
         Update: {
           id?: string
-          full_name?: string
+          full_name?: string | null
+          age?: number | null
+          gender?: string | null
+          fitness_goals?: string[] | null
+          preferred_workout_styles?: Json | null
+          target_muscle_groups?: string[] | null
+          skill_level?: string | null
           preferences?: Json | null
           created_at?: string | null
           updated_at?: string | null
@@ -36,28 +54,34 @@ export interface Database {
         Row: {
           id: string
           user_id: string
-          exercises: Json
-          duration: number
-          completed: boolean | null
-          workout_date: string | null
+          program_id: string | null
+          started_at: string
+          completed_at: string | null
+          exercises: Json | null
+          total_duration: number | null
+          notes: string | null
           created_at: string | null
         }
         Insert: {
           id?: string
           user_id: string
-          exercises?: Json
-          duration?: number
-          completed?: boolean | null
-          workout_date?: string | null
+          program_id?: string | null
+          started_at: string
+          completed_at?: string | null
+          exercises?: Json | null
+          total_duration?: number | null
+          notes?: string | null
           created_at?: string | null
         }
         Update: {
           id?: string
           user_id?: string
-          exercises?: Json
-          duration?: number
-          completed?: boolean | null
-          workout_date?: string | null
+          program_id?: string | null
+          started_at?: string
+          completed_at?: string | null
+          exercises?: Json | null
+          total_duration?: number | null
+          notes?: string | null
           created_at?: string | null
         }
       }

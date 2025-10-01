@@ -41,23 +41,20 @@ function App() {
   useEffect(() => {
     const loadUserData = async () => {
       try {
+        // If no Supabase configuration, show error
         if (!hasSupabase) {
-          // In demo mode, check for local profile or show onboarding
-          const localProfile = localStorage.getItem('userProfile');
-          if (localProfile) {
-            setUserProfile(JSON.parse(localProfile));
-          } else {
-            setShowOnboarding(true);
-          }
+          console.error('Supabase not configured. Please set up VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
           setIsLoading(false);
           return;
         }
 
+        // If no user, wait for authentication
         if (!user) {
           setIsLoading(false);
           return;
         }
 
+        // Load user data from Supabase
         const userData = await supabaseStorage.getUserData();
         if (userData.profile) {
           setUserProfile(userData.profile);
@@ -102,8 +99,13 @@ function App() {
   };
 
   const handleOnboardingComplete = async (profile: Partial<UserProfile>) => {
+    if (!user) {
+      console.error('No authenticated user found');
+      return;
+    }
+
     const fullProfile: UserProfile = {
-      id: user?.id || 'demo-user',
+      id: user.id,
       fullName: profile.fullName || 'User',
       age: profile.age || 25,
       gender: profile.gender || 'prefer-not-to-say',
@@ -118,16 +120,11 @@ function App() {
     setUserProfile(fullProfile);
     setShowOnboarding(false);
 
-    // Save profile
-    if (hasSupabase) {
-      try {
-        await supabaseStorage.saveUserProfile(fullProfile);
-      } catch (error) {
-        console.error('Error saving profile:', error);
-      }
-    } else {
-      // Save to localStorage in demo mode
-      localStorage.setItem('userProfile', JSON.stringify(fullProfile));
+    // Save profile to Supabase
+    try {
+      await supabaseStorage.saveUserProfile(fullProfile);
+    } catch (error) {
+      console.error('Error saving profile:', error);
     }
   };
 
@@ -136,18 +133,14 @@ function App() {
   };
 
   const handleProfileUpdate = async (profile: Partial<UserProfile>) => {
-    if (userProfile) {
+    if (userProfile && user) {
       const updatedProfile = { ...userProfile, ...profile, updatedAt: new Date() };
       setUserProfile(updatedProfile);
       
-      if (hasSupabase) {
-        try {
-          await supabaseStorage.saveUserProfile(updatedProfile);
-        } catch (error) {
-          console.error('Error updating profile:', error);
-        }
-      } else {
-        localStorage.setItem('userProfile', JSON.stringify(updatedProfile));
+      try {
+        await supabaseStorage.saveUserProfile(updatedProfile);
+      } catch (error) {
+        console.error('Error updating profile:', error);
       }
     }
   };
@@ -164,13 +157,39 @@ function App() {
     );
   }
 
+  // Show error if Supabase is not configured
+  if (!hasSupabase) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-white via-secondary-light to-secondary-dark font-body flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-6">
+            <h2 className="text-2xl font-heading text-red-800 mb-4">Configuration Required</h2>
+            <p className="text-red-700 font-body mb-4">
+              Please set up your Supabase environment variables to use this app.
+            </p>
+            <div className="text-left bg-red-100 p-4 rounded-lg mb-4">
+              <p className="text-sm font-mono text-red-800">
+                Create a .env file with:<br/>
+                VITE_SUPABASE_URL=your_supabase_url<br/>
+                VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+              </p>
+            </div>
+            <p className="text-sm text-red-600 font-body">
+              Visit <a href="https://supabase.com" className="underline">supabase.com</a> to create a project.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Show onboarding if needed
   if (showOnboarding) {
     return <OnboardingFlow onComplete={handleOnboardingComplete} onSkip={handleOnboardingSkip} />;
   }
 
-  // Show sign in page if Supabase is configured but user is not authenticated
-  if (hasSupabase && !user) {
+  // Show sign in page if user is not authenticated
+  if (!user) {
     return <SignInPage />;
   }
 
