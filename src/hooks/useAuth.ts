@@ -15,7 +15,20 @@ export function useAuth() {
     loading: true
   })
 
+  // Check if Supabase is configured
+  const hasSupabase = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY)
+
   useEffect(() => {
+    // If Supabase is not configured, immediately set loading to false
+    if (!hasSupabase) {
+      setAuthState({
+        user: null,
+        session: null,
+        loading: false
+      })
+      return
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setAuthState({
@@ -42,7 +55,7 @@ export function useAuth() {
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [hasSupabase])
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const { data, error } = await supabase.auth.signUp({
