@@ -23,7 +23,7 @@ export const supabaseStorage = {
   // Get user profile and preferences
   async getUserData(): Promise<UserData> {
     // Return demo data if no Supabase config
-    if (!import.meta.env.VITE_SUPABASE_URL) {
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
       return {
         preferences: null,
         favoriteExercises: [],
@@ -35,38 +35,38 @@ export const supabaseStorage = {
       };
     }
     
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return {
-        preferences: null,
-        favoriteExercises: [],
-        workoutHistory: [],
-        currentStreak: 0,
-        longestStreak: 0,
-        totalWorkouts: 0,
-        lastWorkoutDate: null
-      }
-    }
-
-    // Helper function to validate and set default preferences
-    const validateUserPreferences = (rawPreferences: any): UserPreferences => {
-      if (!rawPreferences || typeof rawPreferences !== 'object') {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
         return {
-          goal: 'muscle-building',
-          skillLevel: 'beginner',
-          bodyParts: []
+          preferences: null,
+          favoriteExercises: [],
+          workoutHistory: [],
+          currentStreak: 0,
+          longestStreak: 0,
+          totalWorkouts: 0,
+          lastWorkoutDate: null
         }
       }
 
-      return {
-        goal: rawPreferences.goal || 'muscle-building',
-        skillLevel: rawPreferences.skillLevel || 'beginner',
-        bodyParts: Array.isArray(rawPreferences.bodyParts) ? rawPreferences.bodyParts : []
-      }
-    }
+      // Helper function to validate and set default preferences
+      const validateUserPreferences = (rawPreferences: any): UserPreferences => {
+        if (!rawPreferences || typeof rawPreferences !== 'object') {
+          return {
+            goal: 'muscle-building',
+            skillLevel: 'beginner',
+            bodyParts: []
+          }
+        }
 
-    try {
+        return {
+          goal: rawPreferences.goal || 'muscle-building',
+          skillLevel: rawPreferences.skillLevel || 'beginner',
+          bodyParts: Array.isArray(rawPreferences.bodyParts) ? rawPreferences.bodyParts : []
+        }
+      }
+
       // Get user profile
       const { data: profile } = await supabase
         .from('user_profiles')
@@ -125,93 +125,113 @@ export const supabaseStorage = {
 
   // Save user preferences
   async saveUserPreferences(preferences: UserPreferences): Promise<void> {
-    if (!import.meta.env.VITE_SUPABASE_URL) return;
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) return;
     
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
 
-    const { error } = await supabase
-      .from('user_profiles')
-      .update({ preferences })
-      .eq('id', user.id)
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({ preferences })
+        .eq('id', user.id)
 
-    if (error) {
+      if (error) {
+        console.error('Error saving preferences:', error)
+      }
+    } catch (error) {
       console.error('Error saving preferences:', error)
     }
   },
 
   // Add exercise to favorites
   async addToFavorites(exerciseId: string): Promise<void> {
-    if (!import.meta.env.VITE_SUPABASE_URL) return;
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) return;
     
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
 
-    const { error } = await supabase
-      .from('favorite_exercises')
-      .insert({
-        user_id: user.id,
-        exercise_id: exerciseId
-      })
+      const { error } = await supabase
+        .from('favorite_exercises')
+        .insert({
+          user_id: user.id,
+          exercise_id: exerciseId
+        })
 
-    if (error) {
+      if (error) {
+        console.error('Error adding to favorites:', error)
+      }
+    } catch (error) {
       console.error('Error adding to favorites:', error)
     }
   },
 
   // Remove exercise from favorites
   async removeFromFavorites(exerciseId: string): Promise<void> {
-    if (!import.meta.env.VITE_SUPABASE_URL) return;
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) return;
     
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
 
-    const { error } = await supabase
-      .from('favorite_exercises')
-      .delete()
-      .eq('user_id', user.id)
-      .eq('exercise_id', exerciseId)
+      const { error } = await supabase
+        .from('favorite_exercises')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('exercise_id', exerciseId)
 
-    if (error) {
+      if (error) {
+        console.error('Error removing from favorites:', error)
+      }
+    } catch (error) {
       console.error('Error removing from favorites:', error)
     }
   },
 
   // Check if exercise is favorited
   async isFavorite(exerciseId: string): Promise<boolean> {
-    if (!import.meta.env.VITE_SUPABASE_URL) return false;
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) return false;
     
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return false
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return false
 
-    const { data, error } = await supabase
-      .from('favorite_exercises')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('exercise_id', exerciseId)
-      .single()
+      const { data, error } = await supabase
+        .from('favorite_exercises')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('exercise_id', exerciseId)
+        .single()
 
-    return !error && !!data
+      return !error && !!data
+    } catch (error) {
+      return false
+    }
   },
 
   // Save workout session
   async saveWorkoutSession(session: Omit<WorkoutSession, 'id'>): Promise<void> {
-    if (!import.meta.env.VITE_SUPABASE_URL) return;
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) return;
     
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
 
-    const { error } = await supabase
-      .from('workout_sessions')
-      .insert({
-        user_id: user.id,
-        exercises: session.exercises,
-        duration: session.duration,
-        completed: session.completed,
-        workout_date: new Date().toISOString().split('T')[0]
-      })
+      const { error } = await supabase
+        .from('workout_sessions')
+        .insert({
+          user_id: user.id,
+          exercises: session.exercises,
+          duration: session.duration,
+          completed: session.completed,
+          workout_date: new Date().toISOString().split('T')[0]
+        })
 
-    if (error) {
+      if (error) {
+        console.error('Error saving workout session:', error)
+      }
+    } catch (error) {
       console.error('Error saving workout session:', error)
     }
   },

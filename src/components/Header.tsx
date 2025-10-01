@@ -7,7 +7,7 @@ import { exerciseDatabase } from '../data/exercises';
 
 export function Header() {
   const { user, signOut } = useAuth();
-  const hasSupabase = !!import.meta.env.VITE_SUPABASE_URL;
+  const hasSupabase = !!(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
   const [showProgress, setShowProgress] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -18,17 +18,23 @@ export function Header() {
   // Load user data
   React.useEffect(() => {
     const loadUserData = async () => {
-      if (user) {
-        const userData = await supabaseStorage.getUserData();
-        setFavoriteCount(userData.favoriteExercises.length);
-        setCurrentStreak(userData.currentStreak);
+      if (hasSupabase && user) {
+        try {
+          const userData = await supabaseStorage.getUserData();
+          setFavoriteCount(userData.favoriteExercises.length);
+          setCurrentStreak(userData.currentStreak);
+        } catch (error) {
+          console.error('Error loading user data:', error);
+        }
       }
     };
     loadUserData();
-  }, [user]);
+  }, [user, hasSupabase]);
 
   const handleSignOut = async () => {
-    await signOut();
+    if (hasSupabase) {
+      await signOut();
+    }
     setShowUserMenu(false);
   };
 
@@ -49,35 +55,63 @@ export function Header() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4">
-              {hasSupabase && (
+              {hasSupabase && user && (
                 <>
-              <button
-                onClick={() => setShowProgress(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors"
-              >
-                <BarChart3 className="h-5 w-5" />
-                <span className="font-body">Progress</span>
-                {currentStreak > 0 && (
-                  <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
-                    {currentStreak}
-                  </span>
-                )}
-              </button>
-              
-              <button
-                onClick={() => setShowFavorites(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-accent/10 text-accent rounded-xl hover:bg-accent/20 transition-colors"
-              >
-                <Heart className="h-5 w-5" />
-                <span className="font-body">Favorites</span>
-                {favoriteCount > 0 && (
-                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                    {favoriteCount}
-                  </span>
-                )}
-              </button>
-              
-              {/* User Menu */}
+                  <button
+                    onClick={() => setShowProgress(true)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors"
+                  >
+                    <BarChart3 className="h-5 w-5" />
+                    <span className="font-body">Progress</span>
+                    {currentStreak > 0 && (
+                      <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                        {currentStreak}
+                      </span>
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowFavorites(true)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-accent/10 text-accent rounded-xl hover:bg-accent/20 transition-colors"
+                  >
+                    <Heart className="h-5 w-5" />
+                    <span className="font-body">Favorites</span>
+                    {favoriteCount > 0 && (
+                      <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                        {favoriteCount}
+                      </span>
+                    )}
+                  </button>
+                  
+                  {/* User Menu */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowUserMenu(!showUserMenu)}
+                      className="flex items-center space-x-2 px-4 py-2 bg-accent/10 text-accent rounded-xl hover:bg-accent/20 transition-colors"
+                    >
+                      <User className="h-5 w-5" />
+                      <span className="font-body">Account</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                    
+                    {showUserMenu && (
+                      <div className="absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-sm rounded-xl border border-secondary-light/50 shadow-lg z-50">
+                        <div className="p-4 border-b border-secondary-light/30">
+                          <p className="text-accent font-heading text-sm">Signed in as</p>
+                          <p className="text-accent/70 font-body text-sm truncate">{user?.email}</p>
+                        </div>
+                        <div className="p-2">
+                          <button
+                            onClick={handleSignOut}
+                            className="w-full flex items-center space-x-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            <LogOut className="h-4 w-4" />
+                            <span className="font-body">Sign Out</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
               
@@ -85,37 +119,6 @@ export function Header() {
                 <div className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-xl text-sm font-body">
                   Demo Mode
                 </div>
-              )}
-              
-              {hasSupabase && (
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-accent/10 text-accent rounded-xl hover:bg-accent/20 transition-colors"
-                >
-                  <User className="h-5 w-5" />
-                  <span className="font-body">Account</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-sm rounded-xl border border-secondary-light/50 shadow-lg z-50">
-                    <div className="p-4 border-b border-secondary-light/30">
-                      <p className="text-accent font-heading text-sm">Signed in as</p>
-                      <p className="text-accent/70 font-body text-sm truncate">{user?.email}</p>
-                    </div>
-                    <div className="p-2">
-                      <button
-                        onClick={handleSignOut}
-                        className="w-full flex items-center space-x-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span className="font-body">Sign Out</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
               )}
             </div>
 
@@ -129,7 +132,7 @@ export function Header() {
           </div>
 
           {/* Mobile Menu */}
-          {showMobileMenu && (
+          {showMobileMenu && hasSupabase && user && (
             <div className="md:hidden mt-4 pt-4 border-t border-secondary-light/30">
               <div className="flex flex-col space-y-2">
                 <button
@@ -186,7 +189,7 @@ export function Header() {
       </header>
 
       {/* Progress Modal */}
-      {showProgress && (
+      {showProgress && hasSupabase && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <ProgressTracker onClose={() => setShowProgress(false)} />
@@ -195,7 +198,7 @@ export function Header() {
       )}
 
       {/* Favorites Modal */}
-      {showFavorites && (
+      {showFavorites && hasSupabase && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <FavoritesList onClose={() => setShowFavorites(false)} />
@@ -212,11 +215,15 @@ function FavoritesList({ onClose }: { onClose: () => void }) {
   
   React.useEffect(() => {
     const loadFavorites = async () => {
-      const userData = await supabaseStorage.getUserData();
-      const favorites = exerciseDatabase.filter((exercise: any) => 
-        userData.favoriteExercises.includes(exercise.id)
-      );
-      setFavoriteExercises(favorites);
+      try {
+        const userData = await supabaseStorage.getUserData();
+        const favorites = exerciseDatabase.filter((exercise: any) => 
+          userData.favoriteExercises.includes(exercise.id)
+        );
+        setFavoriteExercises(favorites);
+      } catch (error) {
+        console.error('Error loading favorites:', error);
+      }
     };
     loadFavorites();
   }, []);
