@@ -36,6 +36,23 @@ export const supabaseStorage = {
       }
     }
 
+    // Helper function to validate and set default preferences
+    const validateUserPreferences = (rawPreferences: any): UserPreferences => {
+      if (!rawPreferences || typeof rawPreferences !== 'object') {
+        return {
+          goal: 'muscle_gain',
+          skillLevel: 'beginner',
+          bodyParts: []
+        }
+      }
+
+      return {
+        goal: rawPreferences.goal || 'muscle_gain',
+        skillLevel: rawPreferences.skillLevel || 'beginner',
+        bodyParts: Array.isArray(rawPreferences.bodyParts) ? rawPreferences.bodyParts : []
+      }
+    }
+
     try {
       // Get user profile
       const { data: profile } = await supabase
@@ -70,7 +87,7 @@ export const supabaseStorage = {
       const stats = this.calculateStats(workoutHistory)
 
       return {
-        preferences: profile?.preferences as UserPreferences || null,
+        preferences: validateUserPreferences(profile?.preferences),
         favoriteExercises,
         workoutHistory,
         ...stats
@@ -78,7 +95,11 @@ export const supabaseStorage = {
     } catch (error) {
       console.error('Error loading user data:', error)
       return {
-        preferences: null,
+        preferences: {
+          goal: 'muscle_gain',
+          skillLevel: 'beginner',
+          bodyParts: []
+        },
         favoriteExercises: [],
         workoutHistory: [],
         currentStreak: 0,
