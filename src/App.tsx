@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ProgramBuilder } from './components/ProgramBuilder';
 import { WorkoutProgram } from './components/WorkoutProgram';
 import { Header } from './components/Header';
-import { storage } from './utils/storage';
+import { SignInPage } from './components/SignInPage';
+import { useAuth } from './hooks/useAuth';
+import { supabaseStorage } from './utils/supabaseStorage';
 
 export interface UserPreferences {
   goal: string;
@@ -22,15 +24,21 @@ export interface Exercise {
 }
 
 function App() {
+  const { user, loading: authLoading } = useAuth();
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
   const [showProgram, setShowProgram] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load user data on app start
   useEffect(() => {
-    const loadUserData = () => {
+    const loadUserData = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        const userData = storage.getUserData();
+        const userData = await supabaseStorage.getUserData();
         if (userData.preferences) {
           setUserPreferences(userData.preferences);
           setShowProgram(true);
@@ -43,16 +51,14 @@ function App() {
     };
 
     loadUserData();
-  }, []);
+  }, [user]);
 
-  const handleProgramGenerated = (preferences: UserPreferences) => {
+  const handleProgramGenerated = async (preferences: UserPreferences) => {
     setUserPreferences(preferences);
     setShowProgram(true);
     
     // Save preferences to storage
-    const userData = storage.getUserData();
-    userData.preferences = preferences;
-    storage.saveUserData(userData);
+    await supabaseStorage.saveUserPreferences(preferences);
   };
 
   const handleBackToBuilder = () => {
@@ -61,15 +67,20 @@ function App() {
   };
 
   // Loading component
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-white via-secondary-light to-secondary-dark font-body flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-accent font-body">Loading your fitness journey...</p>
+          <p className="text-accent font-body">Loading...</p>
         </div>
       </div>
     );
+  }
+
+  // Show sign in page if not authenticated
+  if (!user) {
+    return <SignInPage />;
   }
 
   return (
