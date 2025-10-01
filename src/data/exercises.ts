@@ -360,5 +360,280 @@ export const exerciseDatabase: Exercise[] = [
       'Create straight line from knees to shoulders',
       'Lower with control and repeat'
     ]
+  },
+  // Yoga Exercises
+  {
+    id: 'yoga-1',
+    name: 'Downward Dog',
+    description: 'Classic yoga pose that stretches the entire body',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Full Body', 'Flexibility'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Start on hands and knees',
+      'Tuck toes and lift hips up and back',
+      'Straighten legs as much as comfortable',
+      'Press hands into floor and lengthen spine',
+      'Hold for 5-10 breaths'
+    ]
+  },
+  {
+    id: 'yoga-2',
+    name: 'Warrior I',
+    description: 'Powerful standing pose that builds strength and focus',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Legs', 'Core', 'Balance'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Step one foot forward into a lunge',
+      'Turn back foot 45 degrees',
+      'Raise arms overhead',
+      'Bend front knee over ankle',
+      'Hold for 5-8 breaths, then switch sides'
+    ]
+  },
+  {
+    id: 'yoga-3',
+    name: 'Tree Pose',
+    description: 'Balancing pose that improves focus and stability',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Legs', 'Balance', 'Core'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Stand on one leg',
+      'Place other foot on inner thigh or calf',
+      'Bring hands to prayer position',
+      'Focus on a fixed point',
+      'Hold for 30-60 seconds, then switch'
+    ]
+  },
+  {
+    id: 'yoga-4',
+    name: 'Child\'s Pose',
+    description: 'Restorative pose for relaxation and gentle stretching',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Back', 'Hips', 'Flexibility'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Kneel on the floor',
+      'Sit back on heels',
+      'Fold forward with arms extended',
+      'Rest forehead on floor',
+      'Hold for 1-3 minutes'
+    ]
+  },
+  {
+    id: 'yoga-5',
+    name: 'Cat-Cow Stretch',
+    description: 'Gentle spinal movement for flexibility and mobility',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Back', 'Spine', 'Flexibility'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Start on hands and knees',
+      'Arch back and look up (cow)',
+      'Round spine and tuck chin (cat)',
+      'Move slowly between poses',
+      'Repeat 8-10 times'
+    ]
+  },
+  {
+    id: 'yoga-6',
+    name: 'Mountain Pose',
+    description: 'Foundation pose that improves posture and awareness',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Posture', 'Core', 'Balance'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Stand with feet hip-width apart',
+      'Arms at sides, palms facing forward',
+      'Lengthen spine and engage core',
+      'Breathe deeply and stand tall',
+      'Hold for 1-2 minutes'
+    ]
+  },
+  // Pilates Exercises
+  {
+    id: 'pilates-1',
+    name: 'Hundred',
+    description: 'Classic Pilates exercise for core strength and breathing',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Abs', 'Core'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Lie on back with knees bent',
+      'Lift head and shoulders off floor',
+      'Extend arms by sides, palms down',
+      'Pump arms up and down',
+      'Count to 100 while breathing rhythmically'
+    ]
+  },
+  {
+    id: 'pilates-2',
+    name: 'Roll Up',
+    description: 'Spinal articulation exercise for core strength',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Abs', 'Spine', 'Flexibility'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    instructions: [
+      'Lie on back with arms overhead',
+      'Slowly roll up one vertebra at a time',
+      'Reach forward over legs',
+      'Roll back down slowly',
+      'Repeat 5-8 times'
+    ]
+  },
+  {
+    id: 'pilates-3',
+    name: 'Single Leg Circle',
+    description: 'Hip mobility and core stability exercise',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Hips', 'Core', 'Legs'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Lie on back with one leg extended',
+      'Other leg bent, foot on floor',
+      'Circle extended leg in both directions',
+      'Keep hips stable and core engaged',
+      'Complete 5 circles each direction, then switch'
+    ]
+  },
+  {
+    id: 'pilates-4',
+    name: 'Rolling Like a Ball',
+    description: 'Massage and strengthen the spine',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Core', 'Spine', 'Balance'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    instructions: [
+      'Sit with knees to chest',
+      'Hold behind thighs',
+      'Roll back to shoulders',
+      'Roll forward to sitting',
+      'Repeat 6-8 times'
+    ]
+  },
+  {
+    id: 'pilates-5',
+    name: 'Single Leg Stretch',
+    description: 'Core stability and coordination exercise',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Abs', 'Core', 'Legs'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Lie on back with knees to chest',
+      'Lift head and shoulders',
+      'Extend one leg while pulling other knee in',
+      'Switch legs rhythmically',
+      'Repeat 8-10 times each side'
+    ]
+  },
+  {
+    id: 'pilates-6',
+    name: 'Double Leg Stretch',
+    description: 'Advanced core exercise for strength and control',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Abs', 'Core', 'Legs'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    instructions: [
+      'Lie on back with knees to chest',
+      'Lift head and shoulders',
+      'Extend both legs and arms',
+      'Circle arms back to knees',
+      'Repeat 6-8 times'
+    ]
+  },
+  // Flexibility Exercises
+  {
+    id: 'flex-1',
+    name: 'Hip Flexor Stretch',
+    description: 'Stretches tight hip flexors from sitting',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Hips', 'Flexibility'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Start in lunge position',
+      'Lower back knee to ground',
+      'Push hips forward',
+      'Hold for 30-60 seconds',
+      'Switch sides and repeat'
+    ]
+  },
+  {
+    id: 'flex-2',
+    name: 'Hamstring Stretch',
+    description: 'Improves flexibility in the back of the legs',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Legs', 'Flexibility'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Sit with one leg extended',
+      'Other leg bent, foot to inner thigh',
+      'Reach forward over extended leg',
+      'Keep back straight',
+      'Hold for 30-60 seconds, then switch'
+    ]
+  },
+  {
+    id: 'flex-3',
+    name: 'Shoulder Stretch',
+    description: 'Relieves tension in shoulders and upper back',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Shoulders', 'Flexibility'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Bring one arm across chest',
+      'Use other arm to gently pull',
+      'Keep shoulders relaxed',
+      'Hold for 30 seconds',
+      'Switch arms and repeat'
+    ]
+  },
+  {
+    id: 'flex-4',
+    name: 'Chest Opener',
+    description: 'Counteracts rounded shoulders from desk work',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Chest', 'Shoulders', 'Flexibility'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Stand with feet hip-width apart',
+      'Clasp hands behind back',
+      'Lift arms up and back',
+      'Open chest and shoulders',
+      'Hold for 30-60 seconds'
+    ]
+  },
+  {
+    id: 'flex-5',
+    name: 'Spinal Twist',
+    description: 'Improves spinal mobility and relieves back tension',
+    imageUrl: 'https://images.pexels.com/photos/4162492/pexels-photo-4162492.jpeg?auto=compress&cs=tinysrgb&w=800',
+    muscleGroups: ['Spine', 'Back', 'Flexibility'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    instructions: [
+      'Sit with legs extended',
+      'Bend one knee and place foot outside opposite knee',
+      'Twist toward bent knee',
+      'Place opposite elbow on knee',
+      'Hold for 30-60 seconds, then switch'
+    ]
   }
 ];

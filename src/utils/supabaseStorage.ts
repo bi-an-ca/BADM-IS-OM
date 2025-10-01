@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase'
 import type { Exercise, UserPreferences } from '../App'
+import type { UserProfile, WorkoutSession as WorkoutSessionType, ProgressData } from '../types/user'
 
 export interface WorkoutSession {
   id: string
@@ -11,6 +12,7 @@ export interface WorkoutSession {
 
 export interface UserData {
   preferences: UserPreferences | null
+  profile: UserProfile | null
   favoriteExercises: string[]
   workoutHistory: WorkoutSession[]
   currentStreak: number
@@ -26,6 +28,7 @@ export const supabaseStorage = {
     if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
       return {
         preferences: null,
+        profile: null,
         favoriteExercises: [],
         workoutHistory: [],
         currentStreak: 0,
@@ -41,6 +44,7 @@ export const supabaseStorage = {
       if (!user) {
         return {
           preferences: null,
+          profile: null,
           favoriteExercises: [],
           workoutHistory: [],
           currentStreak: 0,
@@ -70,7 +74,7 @@ export const supabaseStorage = {
       // Get user profile
       const { data: profile } = await supabase
         .from('user_profiles')
-        .select('preferences')
+        .select('*')
         .eq('id', user.id)
         .single()
 
@@ -101,6 +105,18 @@ export const supabaseStorage = {
 
       return {
         preferences: validateUserPreferences(profile?.preferences),
+        profile: profile ? {
+          id: profile.id,
+          fullName: profile.full_name || 'User',
+          age: profile.age || 25,
+          gender: profile.gender || 'prefer-not-to-say',
+          fitnessGoals: profile.fitness_goals || [],
+          preferredWorkoutStyles: profile.preferred_workout_styles || [],
+          targetMuscleGroups: profile.target_muscle_groups || [],
+          skillLevel: profile.skill_level || 'beginner',
+          createdAt: new Date(profile.created_at || Date.now()),
+          updatedAt: new Date(profile.updated_at || Date.now())
+        } : null,
         favoriteExercises,
         workoutHistory,
         ...stats
@@ -113,6 +129,7 @@ export const supabaseStorage = {
           skillLevel: 'beginner',
           bodyParts: []
         },
+        profile: null,
         favoriteExercises: [],
         workoutHistory: [],
         currentStreak: 0,
@@ -339,6 +356,65 @@ export const supabaseStorage = {
       workoutsThisMonth,
       averageWorkoutDuration,
       lastWorkoutDate: lastWorkoutDateString || null
+    }
+  },
+
+  // Save user profile
+  async saveUserProfile(profile: UserProfile): Promise<void> {
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) return;
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { error } = await supabase
+        .from('user_profiles')
+        .upsert({
+          id: profile.id,
+          full_name: profile.fullName,
+          age: profile.age,
+          gender: profile.gender,
+          fitness_goals: profile.fitnessGoals,
+          preferred_workout_styles: profile.preferredWorkoutStyles,
+          target_muscle_groups: profile.targetMuscleGroups,
+          skill_level: profile.skillLevel,
+          updated_at: new Date().toISOString()
+        })
+
+      if (error) {
+        console.error('Error saving user profile:', error)
+      }
+    } catch (error) {
+      console.error('Error saving user profile:', error)
+    }
+  },
+
+  // Save workout session (new format)
+  async saveWorkoutSessionNew(session: WorkoutSessionType): Promise<void> {
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) return;
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { error } = await supabase
+        .from('workout_sessions')
+        .insert({
+          id: session.id,
+          user_id: session.userId,
+          program_id: session.programId,
+          started_at: session.startedAt.toISOString(),
+          completed_at: session.completedAt?.toISOString(),
+          exercises: session.exercises,
+          total_duration: session.totalDuration,
+          notes: session.notes
+        })
+
+      if (error) {
+        console.error('Error saving workout session:', error)
+      }
+    } catch (error) {
+      console.error('Error saving workout session:', error)
     }
   }
 }
