@@ -3,6 +3,7 @@ import { Dumbbell, BarChart3, Heart, Menu, User, LogOut, ChevronDown } from 'luc
 import { ProgressTracker } from './ProgressTracker';
 import { useAuth } from '../hooks/useAuth';
 import { supabaseStorage } from '../utils/supabaseStorage';
+import { exerciseDatabase } from '../data/exercises';
 
 export function Header() {
   const { user, signOut } = useAuth();
@@ -194,7 +195,6 @@ export function Header() {
 // Favorites List Component
 function FavoritesList({ onClose }: { onClose: () => void }) {
   const [favoriteExercises, setFavoriteExercises] = useState<any[]>([]);
-  const { exerciseDatabase } = require('../data/exercises');
   
   React.useEffect(() => {
     const loadFavorites = async () => {

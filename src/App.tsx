@@ -39,7 +39,7 @@ function App() {
 
       try {
         const userData = await supabaseStorage.getUserData();
-        if (userData.preferences) {
+        if (userData.preferences && userData.preferences.goal && userData.preferences.bodyParts.length > 0) {
           setUserPreferences(userData.preferences);
           setShowProgram(true);
         }

@@ -40,14 +40,14 @@ export const supabaseStorage = {
     const validateUserPreferences = (rawPreferences: any): UserPreferences => {
       if (!rawPreferences || typeof rawPreferences !== 'object') {
         return {
-          goal: 'muscle_gain',
+          goal: 'muscle-building',
           skillLevel: 'beginner',
           bodyParts: []
         }
       }
 
       return {
-        goal: rawPreferences.goal || 'muscle_gain',
+        goal: rawPreferences.goal || 'muscle-building',
         skillLevel: rawPreferences.skillLevel || 'beginner',
         bodyParts: Array.isArray(rawPreferences.bodyParts) ? rawPreferences.bodyParts : []
       }
@@ -96,7 +96,7 @@ export const supabaseStorage = {
       console.error('Error loading user data:', error)
       return {
         preferences: {
-          goal: 'muscle_gain',
+          goal: 'muscle-building',
           skillLevel: 'beginner',
           bodyParts: []
         },
