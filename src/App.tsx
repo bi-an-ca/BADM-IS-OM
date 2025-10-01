@@ -79,10 +79,28 @@ function App() {
   }
 
   // Show sign in page if not authenticated
-  if (!user) {
+  if (!user && import.meta.env.VITE_SUPABASE_URL) {
     return <SignInPage />;
   }
 
+  // If no Supabase config, show demo mode
+  if (!import.meta.env.VITE_SUPABASE_URL && !showProgram) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-white via-secondary-light to-secondary-dark font-body">
+        <Header />
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-8">
+            <h2 className="text-lg font-heading text-yellow-800 mb-2">Demo Mode</h2>
+            <p className="text-yellow-700 font-body">
+              This is a demo version. To use full features including user accounts and data persistence, 
+              please set up Supabase by clicking the settings icon above.
+            </p>
+          </div>
+        </div>
+        <ProgramBuilder onProgramGenerated={handleProgramGenerated} />
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-secondary-light to-secondary-dark font-body">
       <Header />

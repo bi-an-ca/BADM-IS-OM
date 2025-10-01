@@ -7,6 +7,7 @@ import { exerciseDatabase } from '../data/exercises';
 
 export function Header() {
   const { user, signOut } = useAuth();
+  const hasSupabase = !!import.meta.env.VITE_SUPABASE_URL;
   const [showProgress, setShowProgress] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -48,6 +49,8 @@ export function Header() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4">
+              {hasSupabase && (
+                <>
               <button
                 onClick={() => setShowProgress(true)}
                 className="flex items-center space-x-2 px-4 py-2 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors"
@@ -75,6 +78,16 @@ export function Header() {
               </button>
               
               {/* User Menu */}
+                </>
+              )}
+              
+              {!hasSupabase && (
+                <div className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-xl text-sm font-body">
+                  Demo Mode
+                </div>
+              )}
+              
+              {hasSupabase && (
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
@@ -103,6 +116,7 @@ export function Header() {
                   </div>
                 )}
               </div>
+              )}
             </div>
 
             {/* Mobile Menu Button */}

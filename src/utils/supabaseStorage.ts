@@ -22,6 +22,19 @@ export interface UserData {
 export const supabaseStorage = {
   // Get user profile and preferences
   async getUserData(): Promise<UserData> {
+    // Return demo data if no Supabase config
+    if (!import.meta.env.VITE_SUPABASE_URL) {
+      return {
+        preferences: null,
+        favoriteExercises: [],
+        workoutHistory: [],
+        currentStreak: 0,
+        longestStreak: 0,
+        totalWorkouts: 0,
+        lastWorkoutDate: null
+      };
+    }
+    
     const { data: { user } } = await supabase.auth.getUser()
     
     if (!user) {
@@ -112,6 +125,8 @@ export const supabaseStorage = {
 
   // Save user preferences
   async saveUserPreferences(preferences: UserPreferences): Promise<void> {
+    if (!import.meta.env.VITE_SUPABASE_URL) return;
+    
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
@@ -127,6 +142,8 @@ export const supabaseStorage = {
 
   // Add exercise to favorites
   async addToFavorites(exerciseId: string): Promise<void> {
+    if (!import.meta.env.VITE_SUPABASE_URL) return;
+    
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
@@ -144,6 +161,8 @@ export const supabaseStorage = {
 
   // Remove exercise from favorites
   async removeFromFavorites(exerciseId: string): Promise<void> {
+    if (!import.meta.env.VITE_SUPABASE_URL) return;
+    
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
@@ -160,6 +179,8 @@ export const supabaseStorage = {
 
   // Check if exercise is favorited
   async isFavorite(exerciseId: string): Promise<boolean> {
+    if (!import.meta.env.VITE_SUPABASE_URL) return false;
+    
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return false
 
@@ -175,6 +196,8 @@ export const supabaseStorage = {
 
   // Save workout session
   async saveWorkoutSession(session: Omit<WorkoutSession, 'id'>): Promise<void> {
+    if (!import.meta.env.VITE_SUPABASE_URL) return;
+    
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
