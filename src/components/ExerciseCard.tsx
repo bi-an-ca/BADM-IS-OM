@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Play, Info, Target, Settings, Heart, Timer } from 'lucide-react';
 import type { Exercise } from '../App';
-import { supabaseStorage } from '../utils/supabaseStorage';
+import { storage } from '../utils/storage';
 import { WorkoutTimer } from './WorkoutTimer';
 
 interface ExerciseCardProps {
@@ -13,16 +13,7 @@ interface ExerciseCardProps {
 export function ExerciseCard({ exercise, index, dayContext }: ExerciseCardProps) {
   const [showDetails, setShowDetails] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  // Load favorite status
-  React.useEffect(() => {
-    const loadFavoriteStatus = async () => {
-      const favorite = await supabaseStorage.isFavorite(exercise.id);
-      setIsFavorite(favorite);
-    };
-    loadFavoriteStatus();
-  }, [exercise.id]);
+  const [isFavorite, setIsFavorite] = useState(storage.isFavorite(exercise.id));
 
   const getMuscleGroupColor = (muscleGroup: string) => {
     const colorMap: { [key: string]: string } = {
@@ -40,11 +31,11 @@ export function ExerciseCard({ exercise, index, dayContext }: ExerciseCardProps)
     return colorMap[key] || 'bg-accent';
   };
 
-  const handleFavoriteToggle = async () => {
+  const handleFavoriteToggle = () => {
     if (isFavorite) {
-      await supabaseStorage.removeFromFavorites(exercise.id);
+      storage.removeFromFavorites(exercise.id);
     } else {
-      await supabaseStorage.addToFavorites(exercise.id);
+      storage.addToFavorites(exercise.id);
     }
     setIsFavorite(!isFavorite);
   };
@@ -154,7 +145,7 @@ export function ExerciseCard({ exercise, index, dayContext }: ExerciseCardProps)
               onComplete={() => {
                 setShowTimer(false);
                 // Save workout session
-                supabaseStorage.saveWorkoutSession({
+                storage.saveWorkoutSession({
                   date: new Date().toISOString(),
                   exercises: [exercise],
                   duration: getExerciseDuration(),

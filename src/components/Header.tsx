@@ -1,36 +1,16 @@
 import React, { useState } from 'react';
-import { Dumbbell, BarChart3, Heart, Menu, User, LogOut, ChevronDown } from 'lucide-react';
+import { Dumbbell, BarChart3, Heart, Menu } from 'lucide-react';
 import { ProgressTracker } from './ProgressTracker';
-import { useAuth } from '../hooks/useAuth';
-import { supabaseStorage } from '../utils/supabaseStorage';
-import { exerciseDatabase } from '../data/exercises';
+import { storage } from '../utils/storage';
 
 export function Header() {
-  const { user, signOut } = useAuth();
-  const hasSupabase = !!import.meta.env.VITE_SUPABASE_URL;
   const [showProgress, setShowProgress] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
-  const [favoriteCount, setFavoriteCount] = useState(0);
-  const [currentStreak, setCurrentStreak] = useState(0);
-
-  // Load user data
-  React.useEffect(() => {
-    const loadUserData = async () => {
-      if (user) {
-        const userData = await supabaseStorage.getUserData();
-        setFavoriteCount(userData.favoriteExercises.length);
-        setCurrentStreak(userData.currentStreak);
-      }
-    };
-    loadUserData();
-  }, [user]);
-
-  const handleSignOut = async () => {
-    await signOut();
-    setShowUserMenu(false);
-  };
+  
+  const userData = storage.getUserData();
+  const favoriteCount = userData.favoriteExercises.length;
+  const currentStreak = userData.currentStreak;
 
   return (
     <>
@@ -49,8 +29,6 @@ export function Header() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4">
-              {hasSupabase && (
-                <>
               <button
                 onClick={() => setShowProgress(true)}
                 className="flex items-center space-x-2 px-4 py-2 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors"
@@ -76,47 +54,6 @@ export function Header() {
                   </span>
                 )}
               </button>
-              
-              {/* User Menu */}
-                </>
-              )}
-              
-              {!hasSupabase && (
-                <div className="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-xl text-sm font-body">
-                  Demo Mode
-                </div>
-              )}
-              
-              {hasSupabase && (
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-accent/10 text-accent rounded-xl hover:bg-accent/20 transition-colors"
-                >
-                  <User className="h-5 w-5" />
-                  <span className="font-body">Account</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-sm rounded-xl border border-secondary-light/50 shadow-lg z-50">
-                    <div className="p-4 border-b border-secondary-light/30">
-                      <p className="text-accent font-heading text-sm">Signed in as</p>
-                      <p className="text-accent/70 font-body text-sm truncate">{user?.email}</p>
-                    </div>
-                    <div className="p-2">
-                      <button
-                        onClick={handleSignOut}
-                        className="w-full flex items-center space-x-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span className="font-body">Sign Out</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -163,22 +100,6 @@ export function Header() {
                     </span>
                   )}
                 </button>
-                
-                <div className="pt-2 border-t border-secondary-light/30">
-                  <div className="px-4 py-2 text-accent/70 text-sm font-body">
-                    {user?.email}
-                  </div>
-                  <button
-                    onClick={() => {
-                      handleSignOut();
-                      setShowMobileMenu(false);
-                    }}
-                    className="w-full flex items-center space-x-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span className="font-body">Sign Out</span>
-                  </button>
-                </div>
               </div>
             </div>
           )}
@@ -208,18 +129,12 @@ export function Header() {
 
 // Favorites List Component
 function FavoritesList({ onClose }: { onClose: () => void }) {
-  const [favoriteExercises, setFavoriteExercises] = useState<any[]>([]);
+  const userData = storage.getUserData();
+  const { exerciseDatabase } = require('../data/exercises');
   
-  React.useEffect(() => {
-    const loadFavorites = async () => {
-      const userData = await supabaseStorage.getUserData();
-      const favorites = exerciseDatabase.filter((exercise: any) => 
-        userData.favoriteExercises.includes(exercise.id)
-      );
-      setFavoriteExercises(favorites);
-    };
-    loadFavorites();
-  }, []);
+  const favoriteExercises = exerciseDatabase.filter((exercise: any) => 
+    userData.favoriteExercises.includes(exercise.id)
+  );
 
   return (
     <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-secondary-light/50 p-6 shadow-lg">
