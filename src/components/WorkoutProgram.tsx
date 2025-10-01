@@ -20,7 +20,7 @@ export interface WorkoutDay {
 
 export function WorkoutProgram({ preferences, onBack }: WorkoutProgramProps) {
   const generateWeeklyProgram = (): WorkoutDay[] => {
-    const { goal, skillLevel, bodyParts } = preferences;
+    const { goal, skillLevel, bodyParts = [] } = preferences;
     
     // Define workout split based on selected body parts and goals
     const getWorkoutSplit = () => {

@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Target, Calendar, Clock, TrendingUp, Flame } from 'lucide-react';
-import { storage } from '../utils/storage';
+import { supabaseStorage } from '../utils/supabaseStorage';
 
 interface ProgressTrackerProps {
   onClose?: () => void;
 }
 
 export function ProgressTracker({ onClose }: ProgressTrackerProps) {
-  const [stats, setStats] = useState(storage.getWorkoutStats());
+  const [stats, setStats] = useState({
+    currentStreak: 0,
+    longestStreak: 0,
+    totalWorkouts: 0,
+    workoutsThisWeek: 0,
+    workoutsThisMonth: 0,
+    averageWorkoutDuration: 0
+  });
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'all'>('week');
 
   useEffect(() => {
-    setStats(storage.getWorkoutStats());
+    const loadStats = async () => {
+      const workoutStats = await supabaseStorage.getWorkoutStats();
+      setStats(workoutStats);
+    };
+    loadStats();
   }, []);
 
   const getStreakMessage = () => {
