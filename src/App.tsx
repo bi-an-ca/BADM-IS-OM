@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { ProgramBuilder } from './components/ProgramBuilder';
 import { WorkoutProgram } from './components/WorkoutProgram';
 import { Header } from './components/Header';
-
-export interface UserPreferences {
-  goal: string;
-  skillLevel: string;
-  bodyParts: string[];
-}
+import type { UserPreferences } from './utils/storage';
 
 export interface Exercise {
   id: string;

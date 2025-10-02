@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Target, Calendar, Clock, TrendingUp, Flame } from 'lucide-react';
-import { supabaseStorage } from '../utils/supabaseStorage';
+import { storage } from '../utils/storage';
 
 interface ProgressTrackerProps {
   onClose?: () => void;
@@ -19,7 +19,7 @@ export function ProgressTracker({ onClose }: ProgressTrackerProps) {
 
   useEffect(() => {
     const loadStats = async () => {
-      const workoutStats = await supabaseStorage.getWorkoutStats();
+      const workoutStats = storage.getWorkoutStats();
       setStats(workoutStats);
     };
     loadStats();

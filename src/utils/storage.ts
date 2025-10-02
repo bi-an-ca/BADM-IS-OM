@@ -1,4 +1,10 @@
-import type { Exercise, UserPreferences } from '../App';
+import type { Exercise } from '../App';
+
+export interface UserPreferences {
+  goal: string;
+  skillLevel: string;
+  bodyParts: string[];
+}
 
 export interface WorkoutSession {
   id: string;

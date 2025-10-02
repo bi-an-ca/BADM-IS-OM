@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Play, Info, Target, Settings, Heart, Timer } from 'lucide-react';
 import type { Exercise } from '../App';
-import { supabaseStorage } from '../utils/supabaseStorage';
+import { storage } from '../utils/storage';
 import { WorkoutTimer } from './WorkoutTimer';
 
 interface ExerciseCardProps {
@@ -18,7 +18,7 @@ export function ExerciseCard({ exercise, index, dayContext }: ExerciseCardProps)
   // Load favorite status
   React.useEffect(() => {
     const loadFavoriteStatus = async () => {
-      const favorite = await supabaseStorage.isFavorite(exercise.id);
+      const favorite = storage.isFavorite(exercise.id);
       setIsFavorite(favorite);
     };
     loadFavoriteStatus();
@@ -42,9 +42,9 @@ export function ExerciseCard({ exercise, index, dayContext }: ExerciseCardProps)
 
   const handleFavoriteToggle = async () => {
     if (isFavorite) {
-      await supabaseStorage.removeFromFavorites(exercise.id);
+      storage.removeFromFavorites(exercise.id);
     } else {
-      await supabaseStorage.addToFavorites(exercise.id);
+      storage.addToFavorites(exercise.id);
     }
     setIsFavorite(!isFavorite);
   };
@@ -154,7 +154,7 @@ export function ExerciseCard({ exercise, index, dayContext }: ExerciseCardProps)
               onComplete={() => {
                 setShowTimer(false);
                 // Save workout session
-                supabaseStorage.saveWorkoutSession({
+                storage.saveWorkoutSession({
                   date: new Date().toISOString(),
                   exercises: [exercise],
                   duration: getExerciseDuration(),
