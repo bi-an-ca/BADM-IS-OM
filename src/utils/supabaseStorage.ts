@@ -67,7 +67,7 @@ export const supabaseStorage = {
         .from('user_profiles')
         .select('*')
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
 
       // Get favorite exercises
       const { data: favorites } = await supabase
